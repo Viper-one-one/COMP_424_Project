@@ -45,7 +45,7 @@ function validateForm() {
 
     // Validate password
     if (password1.length < 8) {
-        alert("Password must be at least 6 characters long.");
+        alert("Password must be at least 8 characters long.");
         return false;
     }
 
@@ -75,12 +75,4 @@ function validateForm() {
         return false;
     }
     return true;
-}
-
-function passwordValidation(password) {
-    return password.length >= 8 &&
-     /[a-z]/.test(password) &&
-     /[A-Z]/.test(password) &&
-     /[0-9]/.test(password) &&
-     /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password);
 }
