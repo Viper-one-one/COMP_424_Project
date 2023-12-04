@@ -44,7 +44,7 @@ function validateForm() {
     }
 
     // Validate password
-    if (password1.length < 6) {
+    if (password1.length < 8) {
         alert("Password must be at least 6 characters long.");
         return false;
     }
@@ -54,18 +54,33 @@ function validateForm() {
         alert("Passwords do not match.");
         return false;
     }
-
-    validatePassword(password1);
-
+    
+    if (!/[a-z]/.test(text)) {
+        alert("Password must contain at least 1 lowercase letter.");
+        return false;
+    }
+    
+    if (!/[A-Z]/.test(text)) {
+        alert("Password must contain at least 1 uppercase letter.");
+        return false;
+    }
+    
+    if (!/[0-9]/.test(text)) {
+        alert("Password must contain at least 1 number.");
+        return false;
+    }
+    
+    if (!/[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(text)) {
+        alert("Password must contain at least 1 special character.");
+        return false;
+    }
     return true;
 }
 
-function validatePassword(password) {
-    if (username.length >= 8) {
-        var regex = /^(?=.*\\d)(?=.*\\W).{8,}$/; // the regex to test against
-        var isValid = regex.test(password);
-        return isValid;
-    } else {
-        return false;
-    }
+function passwordValidation(password) {
+    return password.length >= 8 &&
+     /[a-z]/.test(password) &&
+     /[A-Z]/.test(password) &&
+     /[0-9]/.test(password) &&
+     /[~`!#$%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/g.test(password);
 }
