@@ -67,4 +67,39 @@ if (isset($_POST['reg_user'])) {
     header('location: index.php');
   }
 }
+// LOGIN USER
+if (isset($_POST['login_user'])) {
+  $username = mysqli_real_escape_string($db, $_POST['username']);
+  $password = mysqli_real_escape_string($db, $_POST['password']);
+
+  if (empty($username)) {
+        array_push($errors, "Username is required");
+  }
+  if (empty($password)) {
+        array_push($errors, "Password is required");
+  }
+
+  if (count($errors) == 0) {
+        $password = md5($password);
+	$query = "SELECT * FROM user_table WHERE user_name='$username' AND hashed_user_password='$password'";
+        $results = mysqli_query($db, $query);
+	if (mysqli_num_rows($results) == 1) {
+	$user = mysqli_fetch_assoc($results); 
+	$_SESSION['user_id'] = $user['id']; // Store user ID in the session
+	$updateLoginQuery = "INSERT INTO user_logins (last_login, login_total, id) VALUES (NOW(), 1, {$user['id']}) ON DUPLICATE KEY UPDATE last_login = NOW(), login_total = login_total + 1";
+	mysqli_query($db, $updateLoginQuery);
+	// Retrieve last login and login total
+        $loginInfoQuery = "SELECT last_login, login_total FROM user_logins WHERE id = " . $user['id'];
+        $loginInfoResult = mysqli_query($db, $loginInfoQuery);
+        $loginInfo = mysqli_fetch_assoc($loginInfoResult);  
+	$_SESSION['username'] = $username;
+	$_SESSION['last_login'] = $loginInfo['last_login'];
+        $_SESSION['login_total'] = $loginInfo['login_total'];
+        $_SESSION['success'] = "You are now logged in";
+        header('location: index.php');
+        }else {
+                array_push($errors, "Wrong username/password combination");
+        }
+  }
+}
 ?>
