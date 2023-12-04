@@ -5,6 +5,13 @@ error_reporting(E_ALL);
 session_start();
 
 // initializing variables
+$pre_sanitize_first_name;
+$pre_sanitize_last_name;
+$pre_sanitize_email;
+$pre_sanitize_password;
+$pre_sanitize_dob;
+$pre_sanitize_username;
+
 $user_first_name = "";
 $user_last_name = "";
 $user_dob = "";
@@ -16,6 +23,10 @@ $errors = array();
 // connect to the database
 $db = mysqli_connect('localhost', 'sergio', 'Password123!', 'registration'
 );
+// a different implementation?
+$dsn = "mysql:host=$localhost;dbname=$registration";
+$conn = new PDO($dsn, "sergio", "Password123!");
+
 //Debug purpose clean this up afterwards
 if (!$db) {
     die("Connection failed: " . mysqli_connect_error());
@@ -23,6 +34,7 @@ if (!$db) {
 // REGISTER USER
 if (isset($_POST['reg_user'])) {
   // receive all input values from the form
+
   $user_first_name = mysqli_real_escape_string($db, $_POST['first_name']);
   $user_last_name = mysqli_real_escape_string($db, $_POST['last_name']);
   $user_dob = mysqli_real_escape_string($db, $_POST['dob']);
@@ -58,9 +70,20 @@ if (isset($_POST['reg_user'])) {
 
   // Finally, register user if there are no errors in the form
   if (count($errors) == 0) {
-    $query = "INSERT INTO user_table (user_first_name, user_last_name, user_dob, user_name, user_email, hashed_user_password, user_role) 
-              VALUES('$user_first_name', '$user_last_name', '$user_dob', '$user_name', '$user_email', '$hashed_user_password', '$user_role')";
-    mysqli_query($db, $query);
+    //$query = "INSERT INTO user_table (user_first_name, user_last_name, user_dob, user_name, user_email, hashed_user_password, user_role) 
+    //          VALUES('$user_first_name', '$user_last_name', '$user_dob', '$user_name', '$user_email', '$hashed_user_password', '$user_role')";
+    $sql = "INSERT INTO user_table (user_first_name, user_last_name, user_dob, user_name, user_email, hashed_user_password, user_role) 
+    VALUES(:user_first_name, :user_last_name, :user_dob, :user_name:, :user_email, :hashed_user_password, :user_role)";
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(":username", $user_first_name);
+    $statement->bindValue(":user_last_name", $user_last_name);
+    $statement->bindValue(":user_dob", $user_dob);
+    $statement->bindValue(":user_name", $user_name);
+    $statement->bindValue(":user_email", $user_email);
+    $statement->bindValue(":password", $hashed_user_password);
+    $statement->bindValue(":user_role", $user_role);
+    $statement->execute();
+    // mysqli_query($db, $query);
     
     $_SESSION['user_name'] = $user_name;
     $_SESSION['success'] = "You are now registered and logged in";

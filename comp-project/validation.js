@@ -55,6 +55,17 @@ function validateForm() {
         return false;
     }
 
+    validatePassword(password1);
+
     return true;
 }
 
+function validatePassword(password) {
+    if (username.length >= 8) {
+        var regex = /^(?=.*\\d)(?=.*\\W).{8,}$/; // the regex to test against
+        var isValid = regex.test(password);
+        return isValid;
+    } else {
+        return false;
+    }
+}
