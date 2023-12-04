@@ -6,6 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <script>
+        var button = document.getElementById("reg_user");
+        button.addEventListener("click", validateForm);
+    </script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -59,6 +63,7 @@
             color: #4caf50;
         }
     </style>
+    <script src="validation.js">
 </head>
 <body>
 
@@ -98,7 +103,7 @@
             <input type="password" name="password_2">
         </div>
         <div class="input-group">
-            <button type="submit" class="btn" name="reg_user">Register</button>
+            <button type="submit" class="btn" name="reg_user" id="reg_user">Register</button>
         </div>
         <p>Already a member? <a href="index.php">Sign in</a></p>
     </form>
@@ -106,4 +111,3 @@
 
 </body>
 </html>
-
