@@ -33,6 +33,7 @@ sudo rm /tmp/snortrules.tar.gz
 
 # Configure Snort
 #add some logic here to get dynamic ip if one can
+#need to check that this ip we're pluging in is correct
 sed -i -e 's/ipvar HOME_NET.*/ipvar HOME_NET 172.31.18.125\/20/g' /etc/snort/snort.conf
 sudo ip link set eth0 promisc on
 sudo snort -d -l /var/log/snort/ -h 172.31.18.125/20 -A console -c /etc/snort/snort.conf
