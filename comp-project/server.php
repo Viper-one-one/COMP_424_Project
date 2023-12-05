@@ -72,9 +72,9 @@ if (isset($_POST['reg_user'])) {
   if (count($errors) == 0) {
     //$query = "INSERT INTO user_table (user_first_name, user_last_name, user_dob, user_name, user_email, hashed_user_password, user_role) 
     //          VALUES('$user_first_name', '$user_last_name', '$user_dob', '$user_name', '$user_email', '$hashed_user_password', '$user_role')";
-    $sql = "INSERT INTO user_table (user_first_name, user_last_name, user_dob, user_name, user_email, hashed_user_password, user_role) 
+    $update_sql = "INSERT INTO user_table (user_first_name, user_last_name, user_dob, user_name, user_email, hashed_user_password, user_role) 
     VALUES(:user_first_name, :user_last_name, :user_dob, :user_name:, :user_email, :hashed_user_password, :user_role)";
-    $statement = $conn->prepare($sql);
+    $statement = $conn->prepare($update_sql);
     $statement->bindValue(":username", $user_first_name);
     $statement->bindValue(":user_last_name", $user_last_name);
     $statement->bindValue(":user_dob", $user_dob);
@@ -103,20 +103,27 @@ if (isset($_POST['login_user'])) {
   }
 
   if (count($errors) == 0) {
-        $password = md5($password);
-	$query = "SELECT * FROM user_table WHERE user_name='$username' AND hashed_user_password='$password'";
-        $results = mysqli_query($db, $query);
+    $password = md5($password);
+    $sql = "SELECT * FROM user_table WHERE user_name=:username AND hashed_user_password=:hashed_password";
+    $statement = $conn->prepare($sql);
+    $statement->bindValue(":username", $username);
+    $statement->bindValue(":hashed_password", $password);
+    $statement->execute();
+    //$results = mysqli_query($db, $query);
 	if (mysqli_num_rows($results) == 1) {
-	$user = mysqli_fetch_assoc($results); 
-	$_SESSION['user_id'] = $user['id']; // Store user ID in the session
-	$updateLoginQuery = "INSERT INTO user_logins (last_login, login_total, id) VALUES (NOW(), 1, {$user['id']}) ON DUPLICATE KEY UPDATE last_login = NOW(), login_total = login_total + 1";
-	mysqli_query($db, $updateLoginQuery);
-	// Retrieve last login and login total
+    $user = mysqli_fetch_assoc($results); 
+    $_SESSION['user_id'] = $user['id']; // Store user ID in the session
+    $updateLoginQuery_sql = "INSERT INTO user_logins (last_login, login_total, id) VALUES (NOW(), 1, :id) ON DUPLICATE KEY UPDATE last_login = NOW(), login_total = login_total + 1";
+    $statement = $conn->prepare($updateLoginQuery_sql);
+    $statement->bindValue(":id", $user['id']);
+    $statement->execute();
+    //mysqli_query($db, $updateLoginQuery);
+    // Retrieve last login and login total
         $loginInfoQuery = "SELECT last_login, login_total FROM user_logins WHERE id = " . $user['id'];
         $loginInfoResult = mysqli_query($db, $loginInfoQuery);
         $loginInfo = mysqli_fetch_assoc($loginInfoResult);  
-	$_SESSION['username'] = $username;
-	$_SESSION['last_login'] = $loginInfo['last_login'];
+    $_SESSION['username'] = $username;
+    $_SESSION['last_login'] = $loginInfo['last_login'];
         $_SESSION['login_total'] = $loginInfo['login_total'];
         $_SESSION['success'] = "You are now logged in";
         header('location: index.php');
