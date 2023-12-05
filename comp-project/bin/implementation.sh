@@ -26,9 +26,7 @@ sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 sudo /sbin/iptables-save
 
 # Download Community Rules
-sudo mkdir /etc/snort/{lists, so_rules, rules}
-sudo touch /etc/snort/rules/local.rules
-sudo touch /etc/snort/lists/default.blocklist
+sudo mkdir /etc/snort/rules
 sudo wget https://www.snort.org/downloads/community/community-rules.tar.gz -O /tmp/snortrules.tar.gz
 sudo tar -xzvf /tmp/snortrules.tar.gz -C /etc/snort/rules
 sudo rm /tmp/snortrules.tar.gz
