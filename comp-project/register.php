@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
@@ -97,6 +98,8 @@
             <label>Confirm password</label>
             <input type="password" name="password_2">
         </div>
+        <div class="g-recaptcha" data-sitekey="your_site_key"></div>
+        <br/>
         <div class="input-group">
             <button type="submit" class="btn" name="reg_user">Register</button>
         </div>
